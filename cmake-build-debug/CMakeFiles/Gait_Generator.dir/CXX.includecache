@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/duoduo06/CLionProjects/Gait_Generator/Gait_generator.cpp
+Gait_generator.h
+/Users/duoduo06/CLionProjects/Gait_Generator/Gait_generator.h
+
+/Users/duoduo06/CLionProjects/Gait_Generator/Gait_generator.h
+vector
+-
+cmath
+-
+iostream
+-
+
+/Users/duoduo06/CLionProjects/Gait_Generator/main.cpp
+iostream
+-
+
