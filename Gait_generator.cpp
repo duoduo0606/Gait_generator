@@ -145,7 +145,7 @@ Gait_generator::xyz_position Gait_generator::target_position_generator(float leg
 vector<float> Gait_generator::motor_theta_generator(xyz_position target_position,time_para leg_time_para)
 {
     float sup_vel_x,lift_vel_x,sup_vel_y,lift_vel_y;
-    float step_hight;
+    float step_hight = 30;
     float del_t;
     vector<float> theta;
     xyz_position time_t_position;
