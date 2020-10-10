@@ -172,7 +172,7 @@ vector<float> Gait_generator::motor_theta_generator(xyz_position target_position
         //cout << "here" << time_t_position.px << endl;
         //cout << leg_time_para.t1 << endl;
         time_t_position.py = -sup_vel_y*leg_time_para.t1+lift_vel_y*(t-leg_time_para.t1);
-        time_t_position.pz = 4*step_hight/(del_t*del_t)*t*(t-del_t);
+        time_t_position.pz = -4*step_hight/(del_t*del_t)*(t-leg_time_para.t1)*(t-leg_time_para.t2);
         //cout << "in lift" << t << endl;
     }
 
