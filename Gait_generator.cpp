@@ -10,7 +10,7 @@ Gait_generator::Gait_generator()
 {
     full_cycle_time = 8;
     time_step = 1;
-    gait_para_var = {50,-30,0,0};
+    gait_para_var = {20,0,0,0};
 
     rf_pos[0] = B_L/2;
     rf_pos[1] = -(B_W/2+L1);
@@ -63,7 +63,7 @@ void Gait_generator::runner()
 
         rf_target_position = target_position_generator(rf_pos);
         rf_theta = motor_theta_generator(rf_target_position,rf_time_para);
-/*
+
         rb_target_position = target_position_generator(rb_pos);
         rb_target_position.px = -rb_target_position.px;
         rb_theta = motor_theta_generator(rb_target_position,rb_time_para);
@@ -81,7 +81,7 @@ void Gait_generator::runner()
         leg_theta.push_back(rb_theta);
         leg_theta.push_back(lf_theta);
         leg_theta.push_back(lb_theta);
-*/
+
         for (k = 0; k < 4; k++)
         {
             //cout<< "leg_theta" << k << "\t";
@@ -193,22 +193,34 @@ vector<float> Gait_generator::DH_inversekinematic(xyz_position time_t_pos)
 {
     vector<float> theta;
     float px,py,pz;
-    float m,theta1,theta2,theta3;
+    float m,a,b,theta1,theta2,theta3;
+    float l0;
+
+    l0 = 1/2*B_L - L2;
 
     px = time_t_pos.px;
     py = time_t_pos.py;
     pz = time_t_pos.pz;
-
+/*
     theta1 = atan2(-px,py) - atan2(sqrt(px*px+py*py-L3*L3),L3);
     m = px*cos(theta1) + py*sin(theta1);
     theta3 = acos((m*m+pz*pz-L1*L1-L2*L2)/(2*L1*L2));
     theta2 = atan2(pz*(L1+L2*cos(theta3))-L2*sin(theta3),m*(L1+L2*cos(theta3))+pz*L2*sin(theta3));
+*/
+
+    theta1 = atan2(L3,sqrt((px-l0)*(px-l0)+py*py-L3*L3))+atan2(py,(px-l0));
+    m = ((pow((pz-l0),2)+pow((cos(theta1)*px+sin(theta1)*py-l0*cos(theta1)),2)-L1*L1-L2*L2-L3*L3)/(2*L1));
+    theta3 = atan2(L2,L3)+atan2(m,sqrt(L2*L2+L3*L3-m*m));
+    a = L2*cos(theta3)-L3*sin(theta3)+L1;
+    b = L2*sin(theta3)+L3*cos(theta3);
+    theta2 = atan2((pz-l0),sqrt(a*a+b*b-(pz-l0)*(pz-l0)))-atan2(b,a);
 
     theta.push_back(theta1);
     theta.push_back(theta2);
     theta.push_back(theta3);
 
-    cout << px << endl;
+    cout << pz << endl;
+    //cout << py << endl;
     //cout << theta1 << endl;
 
     return theta;

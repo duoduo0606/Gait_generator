@@ -11,7 +11,7 @@
 
 #define L1 70
 #define L2 50
-#define L3 45
+#define L3 24
 
 #define B_L 360
 #define B_W 80
