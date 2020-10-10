@@ -47,14 +47,16 @@ public:
     };
 
     //-----variable declaration-----
-    float full_cycle_time,t;
-    static gait_para gait_para_var;//{step_length,step_width,step_depth,yaw_angle}
+    float full_cycle_time,time_step;
+    float t;
+    gait_para gait_para_var;//{step_length,step_width,step_depth,yaw_angle}
     float rf_pos[4],rb_pos[4],lf_pos[4],lb_pos[4];
+    time_para rf_time_para,rb_time_para,lf_time_para,lb_time_para;
 
     //-----Function declaration-----
     void runner();
     xyz_position target_position_generator(float leg_pos[]);
-    vector<float> motor_theta_generator(xyz_position target_position,float t);
+    vector<float> motor_theta_generator(xyz_position target_position,Gait_generator::time_para leg_time_para);
     vector<float> DH_inversekinematic(xyz_position delta_position);
 
 

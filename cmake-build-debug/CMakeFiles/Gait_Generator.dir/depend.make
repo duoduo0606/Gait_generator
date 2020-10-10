@@ -4,5 +4,6 @@
 CMakeFiles/Gait_Generator.dir/Gait_generator.cpp.o: ../Gait_generator.cpp
 CMakeFiles/Gait_Generator.dir/Gait_generator.cpp.o: ../Gait_generator.h
 
+CMakeFiles/Gait_Generator.dir/main.cpp.o: ../Gait_generator.h
 CMakeFiles/Gait_Generator.dir/main.cpp.o: ../main.cpp
 
