@@ -10,7 +10,7 @@ Gait_generator::Gait_generator()
 {
     full_cycle_time = 8;
     time_step = 1;
-    gait_para_var = {0,0,0,0};
+    gait_para_var = {30,0,0,0};
 
     rf_leg_pos[0] = B_L/2;
     rf_leg_pos[1] = -(B_W/2+L1);
@@ -229,13 +229,14 @@ vector<float> Gait_generator::DH_inversekinematic(xyz_position time_t_pos)
 
 
     px = -time_t_pos.py;
-    py = -time_t_pos.pz;
-    pz = time_t_pos.px;
+    py = time_t_pos.px;
+    pz = time_t_pos.pz;
 
 
     //cout << px << endl;
     //cout << py << endl;
     //cout << pz << endl;
+
 
     theta1 = atan2(-px,py) - atan2(sqrt(px*px+py*py-L3*L3),L3);
     m = px*cos(theta1) + py*sin(theta1);
@@ -251,14 +252,20 @@ vector<float> Gait_generator::DH_inversekinematic(xyz_position time_t_pos)
     theta2 = atan2((pz-l0),sqrt(a*a+b*b-(pz-l0)*(pz-l0)))-atan2(b,a);
 */
 
+    theta1 = asin(-L3/sqrt(px*px+pz*pz))-atan2(pz,px);
+    theta3 = asin((L1*L1+L2*L2+L3*L3-px*px-py*py-pz*pz)/(2*L1*L2));
+    theta2 = asin((px*px+py*py+pz*pz+L1*L1-L2*L2-L3*L3)/(2*L1*sqrt(px*px+py*py+pz*pz-L3*L3)))-atan2(sqrt(px*px+pz*pz-L3*L3),py);
+
     theta.push_back(theta1);
     theta.push_back(theta2);
     theta.push_back(theta3);
-
+/*
     cout << px << endl;
     cout << py << endl;
     cout << pz << endl;
     cout << theta1 << endl;
-
+    cout << theta2 << endl;
+    cout << theta3 << endl;
+*/
     return theta;
 }
