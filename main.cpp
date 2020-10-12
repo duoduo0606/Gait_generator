@@ -6,9 +6,9 @@ int main() {
 
     Gait_generator gg;
     vector<vector<float>> theta;
-    for (int i = 0; i < 800; i++)
+    for (int i = 0; i < 8; i++)
     {
-        gg.t = i/100;
+        gg.t = i/1;
         theta = gg.runner(gg.t);
     }
 

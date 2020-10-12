@@ -9,7 +9,7 @@ using namespace std;
 Gait_generator::Gait_generator()
 {
     full_cycle_time = 8;
-    time_step = 0.01;
+    time_step = 1;
     gait_para_var = {20,0,0,0};
 
     rf_leg_pos[0] = B_L/2;
@@ -83,6 +83,7 @@ vector<vector<float>> Gait_generator::runner(float t)
         t = i*time_step;
         cout << "t=" << t << endl;
 */
+        cout << "t=" << t << endl;
 
         rf_target_position = target_position_generator(rf_leg_pos);
         rf_theta = motor_theta_generator(rf_target_position,rf_time_para,rf_leg_pos,rf_shoulder_pos);
@@ -165,7 +166,7 @@ vector<float> Gait_generator::motor_theta_generator(xyz_position target_position
     vector<float> theta;
     xyz_position time_t_position;
 
-    time_t_position = {0};
+    //time_t_position = {0};
     del_t = leg_time_para.t2-leg_time_para.t1;
 
     sup_vel_x = target_position.px/(full_cycle_time-del_t);
@@ -204,7 +205,7 @@ vector<float> Gait_generator::motor_theta_generator(xyz_position target_position
 
     if ((leg_pos == lf_leg_pos) || (leg_pos == lb_leg_pos))
     {
-        time_t_position.py = -time_t_position.py;
+        time_t_position.py =  -time_t_position.py ;
     }
 
     theta = DH_inversekinematic(time_t_position);
