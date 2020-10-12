@@ -59,7 +59,7 @@ Gait_generator::Gait_generator()
 
 }
 
-void Gait_generator::runner()
+void Gait_generator::runner(float t)
 {
     vector<float> rf_theta;
     vector<float> rb_theta;
@@ -73,14 +73,16 @@ void Gait_generator::runner()
     xyz_position lf_target_position;
     xyz_position lb_target_position;
 
-    int i,k,p,n;
+    //int i,n;
+    int k,p;
 
-    n = int(full_cycle_time/time_step);
-
+    //n = int(full_cycle_time/time_step);
+/*
     for (i = 0; i < n; i++)
     {
         t = i*time_step;
         cout << "t=" << t << endl;
+*/
 
         rf_target_position = target_position_generator(rf_leg_pos);
         rf_theta = motor_theta_generator(rf_target_position,rf_time_para,rf_leg_pos,rf_shoulder_pos);
@@ -108,7 +110,7 @@ void Gait_generator::runner()
             }
             cout << endl;
         } //end k,p
-    } //end i
+    //} //end i
 }//end runner
 
 Gait_generator::xyz_position Gait_generator::target_position_generator(float leg_pos[])
