@@ -9,21 +9,24 @@ using namespace std;
 Gait_generator::Gait_generator()
 {
     full_cycle_time = 8;
-    time_step = 1;
-    gait_para_var = {30,0,0,0};
+    time_step = 0.1;
+    gait_para_var = {20,0,0,0};
 
     rf_leg_pos[0] = B_L/2;
     rf_leg_pos[1] = -(B_W/2+L1);
     rf_leg_pos[2] = -L3;
     rf_leg_pos[3] = 1;
+
     rb_leg_pos[0] = -B_L/2;
     rb_leg_pos[1] = -(B_W/2+L1);
     rb_leg_pos[2] = -L3;
     rb_leg_pos[3] = 1;
+
     lf_leg_pos[0] = B_L/2;
     lf_leg_pos[1] = B_W/2+L1;
     lf_leg_pos[2] = -L3;
     lf_leg_pos[3] = 1;
+
     lb_leg_pos[0] = -B_L/2;
     lb_leg_pos[1] = B_W/2+L1;
     lb_leg_pos[2] = -L3;
@@ -33,14 +36,17 @@ Gait_generator::Gait_generator()
     rf_shoulder_pos[1] = -B_W/2;
     rf_shoulder_pos[2] = 0;
     rf_shoulder_pos[3] = 1;
+
     rb_shoulder_pos[0] = -B_L/2-L2;
     rb_shoulder_pos[1] = -B_W/2;
     rb_shoulder_pos[2] = 0;
     rb_shoulder_pos[3] = 1;
+
     lf_shoulder_pos[0] = B_L/2-L2;
     lf_shoulder_pos[1] = B_W/2;
     lf_shoulder_pos[2] = 0;
     lf_shoulder_pos[3] = 1;
+
     lb_shoulder_pos[0] = -B_L/2-L2;
     lb_shoulder_pos[1] = B_W/2;
     lb_shoulder_pos[2] = 0;
@@ -50,8 +56,6 @@ Gait_generator::Gait_generator()
     rb_time_para = {2,4};
     lf_time_para = {4,6};
     lb_time_para = {6,8};
-
-    //runner();
 
 }
 
@@ -80,20 +84,17 @@ void Gait_generator::runner()
 
         rf_target_position = target_position_generator(rf_leg_pos);
         rf_theta = motor_theta_generator(rf_target_position,rf_time_para,rf_leg_pos,rf_shoulder_pos);
-/*
+
         rb_target_position = target_position_generator(rb_leg_pos);
-        rb_target_position.px = -rb_target_position.px;
         rb_theta = motor_theta_generator(rb_target_position,rb_time_para,rb_leg_pos,rb_shoulder_pos);
 
         lf_target_position = target_position_generator(lf_leg_pos);
-        lf_target_position.py = -lf_target_position.py;
         lf_theta = motor_theta_generator(lf_target_position,lf_time_para,lf_leg_pos,lf_shoulder_pos);
 
         lb_target_position = target_position_generator(lb_leg_pos);
-        lb_target_position.px = -lb_target_position.px;
-        lb_target_position.py = -lb_target_position.py;
         lb_theta = motor_theta_generator(lb_target_position,lb_time_para,lb_leg_pos,lb_shoulder_pos);
-*/
+
+        leg_theta.clear();
         leg_theta.push_back(rf_theta);
         leg_theta.push_back(rb_theta);
         leg_theta.push_back(lf_theta);
@@ -101,12 +102,11 @@ void Gait_generator::runner()
 
         for (k = 0; k < 4; k++)
         {
-            //cout<< "leg_theta" << k << "\t";
             for (p = 0; p < 3; p++)
             {
-                //cout << leg_theta[k][p] << "\t";
+                cout << setw(10) << leg_theta[k][p] << "\t";
             }
-            //cout << endl;
+            cout << endl;
         } //end k,p
     } //end i
 }//end runner
@@ -143,17 +143,12 @@ Gait_generator::xyz_position Gait_generator::target_position_generator(float leg
     for (i = 0; i < 4; i++){
         for (j = 0; j < 4; j++){
               p[i] = p[i] + tran_matrix[i][j]*leg_pos[j];
-              //cout << tran_matrix[i][j] << endl;
         }
-        //cout << p[0] <<endl;
     }
 
     target_position.px = p[0] - leg_pos[0];
     target_position.py = p[1] - leg_pos[1];
     target_position.pz = p[2] - leg_pos[2];
-
-    //cout << target_position.px << endl;
-    //cout << p[1] << endl;
 
     return target_position;
 }
@@ -162,16 +157,16 @@ Gait_generator::xyz_position Gait_generator::target_position_generator(float leg
 vector<float> Gait_generator::motor_theta_generator(xyz_position target_position,time_para leg_time_para,float leg_pos[],float shoulder_pos[])
 {
     float sup_vel_x,lift_vel_x,sup_vel_y,lift_vel_y;
-    float step_hight = 0;
+    float step_hight = 50;
     float del_t;
     vector<float> theta;
     xyz_position time_t_position;
 
+    time_t_position = {0};
     del_t = leg_time_para.t2-leg_time_para.t1;
 
     sup_vel_x = target_position.px/(full_cycle_time-del_t);
     lift_vel_x = target_position.px/del_t;
-    //cout << lift_vel_x << endl;
     sup_vel_y = target_position.py/(full_cycle_time-del_t);
     lift_vel_y = target_position.py/del_t;
 
@@ -180,17 +175,13 @@ vector<float> Gait_generator::motor_theta_generator(xyz_position target_position
         time_t_position.px = -sup_vel_x*t;
         time_t_position.py = -sup_vel_y*t;
         time_t_position.pz = 0;
-        //cout << "in sup1" << endl;
     }
 
     if ((t >= leg_time_para.t1) && (t < leg_time_para.t2))
     {
         time_t_position.px = -sup_vel_x*leg_time_para.t1+lift_vel_x*(t-leg_time_para.t1);
-        //cout << "here" << time_t_position.px << endl;
-        //cout << leg_time_para.t1 << endl;
         time_t_position.py = -sup_vel_y*leg_time_para.t1+lift_vel_y*(t-leg_time_para.t1);
         time_t_position.pz = -4*step_hight/(del_t*del_t)*(t-leg_time_para.t1)*(t-leg_time_para.t2);
-        //cout << "in lift" << t << endl;
     }
 
     if ((t >= leg_time_para.t2) && (t < full_cycle_time))
@@ -198,23 +189,20 @@ vector<float> Gait_generator::motor_theta_generator(xyz_position target_position
         time_t_position.px = -sup_vel_x*leg_time_para.t1+target_position.px-sup_vel_x*(t-leg_time_para.t2);
         time_t_position.py = -sup_vel_y*leg_time_para.t1+target_position.py-sup_vel_y*(t-leg_time_para.t2);
         time_t_position.pz = 0;
-        //cout << "in sup2" << t << endl;
     }
-    //cout << time_t_position.px << endl;
+
     time_t_position.px += leg_pos[0];
     time_t_position.py += leg_pos[1];
     time_t_position.pz += leg_pos[2];
-
-    //cout << time_t_position.px << endl;
 
     time_t_position.px -= shoulder_pos[0];
     time_t_position.py -= shoulder_pos[1];
     time_t_position.pz -= shoulder_pos[2];
 
-    //cout << time_t_position.px << endl;
-    //cout << time_t_position.py << endl;
-    //cout << time_t_position.pz << endl;
-
+    if ((leg_pos == lf_leg_pos) || (leg_pos == lb_leg_pos))
+    {
+        time_t_position.py = -time_t_position.py;
+    }
 
     theta = DH_inversekinematic(time_t_position);
 
@@ -225,24 +213,18 @@ vector<float> Gait_generator::DH_inversekinematic(xyz_position time_t_pos)
 {
     vector<float> theta;
     float px,py,pz;
-    float m,theta1,theta2,theta3;
-
+    float theta1,theta2,theta3;
+    int a;
 
     px = -time_t_pos.py;
     py = time_t_pos.px;
     pz = time_t_pos.pz;
-
-
-    //cout << px << endl;
-    //cout << py << endl;
-    //cout << pz << endl;
-
-
+    /*
     theta1 = atan2(-px,py) - atan2(sqrt(px*px+py*py-L3*L3),L3);
     m = px*cos(theta1) + py*sin(theta1);
     theta3 = acos((m*m+pz*pz-L1*L1-L2*L2)/(2*L1*L2));
     theta2 = atan2(pz*(L1+L2*cos(theta3))-L2*sin(theta3),m*(L1+L2*cos(theta3))+pz*L2*sin(theta3));
-
+    */
 /*
     theta1 = atan2(L3,sqrt((px-l0)*(px-l0)+py*py-L3*L3))+atan2(py,(px-l0));
     m = ((pow((pz-l0),2)+pow((cos(theta1)*px+sin(theta1)*py-l0*cos(theta1)),2)-L1*L1-L2*L2-L3*L3)/(2*L1));
@@ -256,16 +238,11 @@ vector<float> Gait_generator::DH_inversekinematic(xyz_position time_t_pos)
     theta3 = asin((L1*L1+L2*L2+L3*L3-px*px-py*py-pz*pz)/(2*L1*L2));
     theta2 = asin((px*px+py*py+pz*pz+L1*L1-L2*L2-L3*L3)/(2*L1*sqrt(px*px+py*py+pz*pz-L3*L3)))-atan2(sqrt(px*px+pz*pz-L3*L3),py);
 
+    theta.clear();
     theta.push_back(theta1);
     theta.push_back(theta2);
     theta.push_back(theta3);
-/*
-    cout << px << endl;
-    cout << py << endl;
-    cout << pz << endl;
-    cout << theta1 << endl;
-    cout << theta2 << endl;
-    cout << theta3 << endl;
-*/
+
+
     return theta;
 }
