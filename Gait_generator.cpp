@@ -9,7 +9,7 @@ using namespace std;
 Gait_generator::Gait_generator()
 {
     full_cycle_time = 8;
-    time_step = 0.1;
+    time_step = 0.01;
     gait_para_var = {20,0,0,0};
 
     rf_leg_pos[0] = B_L/2;
@@ -59,7 +59,7 @@ Gait_generator::Gait_generator()
 
 }
 
-void Gait_generator::runner(float t)
+vector<vector<float>> Gait_generator::runner(float t)
 {
     vector<float> rf_theta;
     vector<float> rb_theta;
@@ -111,6 +111,7 @@ void Gait_generator::runner(float t)
             cout << endl;
         } //end k,p
     //} //end i
+    return leg_theta;
 }//end runner
 
 Gait_generator::xyz_position Gait_generator::target_position_generator(float leg_pos[])

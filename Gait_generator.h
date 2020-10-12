@@ -56,7 +56,7 @@ public:
     time_para rf_time_para,rb_time_para,lf_time_para,lb_time_para;
 
     //-----Function declaration-----
-    void runner(float t);
+    vector<vector<float>> runner(float t);
     xyz_position target_position_generator(float leg_pos[]);
     vector<float> motor_theta_generator(xyz_position target_position,Gait_generator::time_para leg_time_para,float leg_pos[],float shoulder_pos[]);
     vector<float> DH_inversekinematic(xyz_position delta_position);
